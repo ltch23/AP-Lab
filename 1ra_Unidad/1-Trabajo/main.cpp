@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <time.h>
 // #define s 8
 typedef int T;
 
@@ -62,6 +63,7 @@ vector<vector<T>>mult_blocked (vector<vector<T>>m1,vector<vector<T>>m2){
 
 int main(){
 int row1,col1,row2,col2;
+clock_t t1,t2;
 cout<<"row1 y col1:";  cin>>row1>>col1;
 cout<<"row2 y col2:"; cin>>row2>>col2; cout<<endl;
 if(col1!=row2) return 0;
@@ -71,12 +73,19 @@ vector<vector<T>> m_multiply(row1, vector<T>(col2));
 vector<vector<T>> m_blocked(row1, vector<T>(col2));
 srand(time(NULL));
 fill(m_matr1);fill(m_matr2);
-print(m_matr1);print(m_matr2);
-// m_multiply=multiply(m_matr1,m_matr2);
+// print(m_matr1);print(m_matr2);
+t1 = clock();
+m_multiply=multiply(m_matr1,m_matr2);
+t1 = clock() - t1;
 if(col1!=row1) return 0;
+t2 = clock();
 m_blocked=mult_blocked(m_matr1,m_matr2);
+t2 = clock() - t2;
+
+cout<<"t1: "<<(double)(t1)/CLOCKS_PER_SEC*1000.0<<endl;
+cout<<"t2-block: "<<(double)(t2)/CLOCKS_PER_SEC*1000.0<<endl;
 // print(m_multiply);
-print(m_blocked);
+// print(m_blocked);
  
 return 0;
 }
