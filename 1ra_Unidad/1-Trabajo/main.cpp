@@ -2,11 +2,11 @@
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
-// #define s 8
+#include <fstream>
+
 typedef int T;
 
 using namespace std;
-
 
 void print(vector<vector<T>> & m){
     int row=m.size();
@@ -28,9 +28,6 @@ void fill(vector<vector<T>> &m){
         for(int j=0;j<col;j++)
             m[i][j]=rand()%10+1;
 }
-        
-    
-
 vector<vector<T>>multiply(vector<vector<T>>m1,vector<vector<T>>m2){
     
     int row1=m1.size();
@@ -48,10 +45,10 @@ vector<vector<T>>multiply(vector<vector<T>>m1,vector<vector<T>>m2){
 vector<vector<T>>mult_blocked (vector<vector<T>>m1,vector<vector<T>>m2){
     
     int n=m1.size(); 
+    int block_size=n/10;
     vector<vector<T>> m_rpta(n,vector<T>(n));
-    int block_size=2;
     for(int i=0; i<n; i+=block_size )
-        for(int j=0; j<n; j+=block_size )
+        for(int j=0; j<n; j+=block_size)
             for(int k=0; k<n; k+=block_size )
                 for(int y=i; y<i+block_size; y++ )
                     for(int x=j; x<j+block_size; x++ )
@@ -62,10 +59,10 @@ vector<vector<T>>mult_blocked (vector<vector<T>>m1,vector<vector<T>>m2){
 
 
 int main(){
-int row1,col1,row2,col2;
-clock_t t1,t2;
-cout<<"row1 y col1:";  cin>>row1>>col1;
-cout<<"row2 y col2:"; cin>>row2>>col2; cout<<endl;
+int N,row1,col1,row2,col2;
+cout<<"N:"; cin>>N;  
+
+row1=col1=row2=col2=N;
 if(col1!=row2) return 0;
 vector<vector<T>> m_matr1(row1,vector<T>(col1));
 vector<vector<T>> m_matr2(row2, vector<T>(col2));
@@ -73,19 +70,11 @@ vector<vector<T>> m_multiply(row1, vector<T>(col2));
 vector<vector<T>> m_blocked(row1, vector<T>(col2));
 srand(time(NULL));
 fill(m_matr1);fill(m_matr2);
-// print(m_matr1);print(m_matr2);
-t1 = clock();
-m_multiply=multiply(m_matr1,m_matr2);
-t1 = clock() - t1;
-if(col1!=row1) return 0;
-t2 = clock();
-m_blocked=mult_blocked(m_matr1,m_matr2);
-t2 = clock() - t2;
 
-cout<<"t1: "<<(double)(t1)/CLOCKS_PER_SEC*1000.0<<endl;
-cout<<"t2-block: "<<(double)(t2)/CLOCKS_PER_SEC*1000.0<<endl;
-// print(m_multiply);
-// print(m_blocked);
+//PRIMER ALGORITMO
+m_multiply=multiply(m_matr1,m_matr2);
+//SEGUNDO ALGORITMO
+m_blocked=mult_blocked(m_matr1,m_matr2);
  
 return 0;
 }
