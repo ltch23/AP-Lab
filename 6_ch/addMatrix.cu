@@ -2,15 +2,16 @@
 #include <device_launch_parameters.h>
 #include <cuda_runtime.h>
 #include <cuda.h>
-#include <Windows.h>
 #include <iostream>
+
 using namespace std;
 
 //B. Por cada elemento
 __global__
 void addMatrixKernelB(float* A, float* B, float* C, int n){
 	int i = threadIdx.x + blockDim.x * blockIdx.x;
-	if (i < n*n) C[i] = A[i] + B[i];
+	if (i < n*n)
+        C[i] = A[i] + B[i];
 }
 
 //C. Por cada fila 
@@ -18,7 +19,7 @@ __global__
 void addMatrixKernelC(float* A, float* B, float* C, int n){
 	int i = threadIdx.x + blockDim.x * blockIdx.x;
 	if (i < n)
-			for (int j = i * n; j < i * n + n; j++)
+        for (int j = i * n; j < i * n + n; j++)
 			C[j] = A[j] + B[j];
 }
 
@@ -27,8 +28,8 @@ __global__
 void addMatrixKernelD(float* A, float* B, float* C, int n){
 	int i = threadIdx.x + blockDim.x * blockIdx.x;
 	if (i < n)
-	for (int j = i; j < n*n; j += n)
-		C[j] = A[j] + B[j];
+        for (int j = i; j < n*n; j += n)
+            C[j] = A[j] + B[j];
 }
 
 void addMatrix(float* A, float* B, float* C, int n) {
@@ -47,8 +48,6 @@ void addMatrix(float* A, float* B, float* C, int n) {
 	//dim3 DimBlock (256,1,1);
 	//matrixAddKernel1 <<<DimGrid,DimBlock  >>> (d_A, d_B, d_C, n);
 	addMatrixKernelB<<<ceil ((n*n)/256.0), 256>>> (d_A, d_B, d_C, n);
-	
-    ///ceil((n*n) / 256.0), 256
 	
 	///tranferir output data a Host
 	cudaMemcpy(C, d_C, size, cudaMemcpyDeviceToHost);
@@ -84,15 +83,20 @@ int main() {
 	}
 	
 	///showMatrix
+	cout<<"matrix A "<<endl;
 	showMatrix(A, fila, fila);
 	printf("	+ \n");
+	
+    cout<<"matrix B"<<endl;
 	showMatrix(B, fila, fila);
 	printf("	=  \n");
 
-	///operaciones
 	addMatrix(A, B, C, fila);
-	addMatrix(C, fila, fila);
 	
-    system("PAUSE");
-	exit(0); 
+    cout<<"matrix C "<<endl;
+    showMatrix(C, fila, fila);
+	printf("	=  \n");
+
+    
+	return 0; 
 }
