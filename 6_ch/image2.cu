@@ -10,58 +10,31 @@ __global__
 void PictureKernell(unsigned char* d_Pin, unsigned char* d_Pout, int n, int m){
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   int x = blockIdx.x * blockDim.x + threadIdx.x;
-  int BLUR_SIZE = 25, new_pos;
+  int new_pos;
   if((y < n) && (x < m)) {
-    int pixValR=0, pixValB=0,pixValG=0, pixels = 0;
-    int blurRow, blurCol;
-    for(blurRow = -BLUR_SIZE; blurRow < BLUR_SIZE+1;++blurRow){
-    	for(blurCol = -BLUR_SIZE; blurCol < BLUR_SIZE+1;++blurCol){
-	    int curRow = y + blurRow;
-	    int curCol = x + blurCol;
-	    new_pos = (curRow*m+curCol)*4;
-	    if(curRow > -1 && curRow < n && curCol > -1 && curCol < m){
-	      pixValR += d_Pin[new_pos];
-	      pixValG += d_Pin[new_pos+1];
-	      pixValB += d_Pin[new_pos+2];
-	      pixels++;
-	    }
-	}
-	new_pos = (y*m+x)*4;
-	d_Pout[new_pos] = (unsigned char)(pixValR/pixels);
-    	d_Pout[new_pos+1] = (unsigned char)(pixValG/pixels);
-    	d_Pout[new_pos+2] = (unsigned char)(pixValB/pixels);
-    	d_Pout[new_pos+3] = d_Pin[new_pos+3];
-    }
-    
+    new_pos = (y*m+x)*4;
+    unsigned char r = d_Pin[new_pos];
+    unsigned char g = d_Pin[new_pos+1];
+    unsigned char b = d_Pin[new_pos+2];
+    d_Pout[new_pos] = 0.21f*r + 0.71f*g + 0.07f*b;
+    d_Pout[new_pos+1] = d_Pout[new_pos];
+    d_Pout[new_pos+2] = d_Pout[new_pos];
+    d_Pout[new_pos+3] = d_Pin[new_pos+3];
   }
 }
 
 __global__
 void PictureKernel1D(unsigned char* d_Pin, unsigned char* d_Pout, int n, int m){
   int x = blockIdx.x * blockDim.x + threadIdx.x;
-  int pixValR = 0, pixValG = 0, pixValB = 0;
-  int BLUR_SIZE = 100, blurRow, blurCol;
-  //x = x*4;
-  if(x < n*m) {
-    int pixels=0;
-    for(blurRow = -BLUR_SIZE; blurRow < BLUR_SIZE+1;++blurRow){
-    	for(blurCol = -BLUR_SIZE; blurCol < BLUR_SIZE+1;++blurCol){
-	    int curX = blurCol + x;
-	    int new_x = (blurRow*m + curX)*4;
-	    if(curX > -1 && curX < n*m*4 && new_x > -1 && new_x < n*m*4){
-	      pixValR += d_Pin[new_x];
-	      pixValG += d_Pin[new_x+1];
-	      pixValB += d_Pin[new_x+2];
-	      pixels++;
-	    }
-	}
-	d_Pout[x*4] = (unsigned char)(pixValR/pixels);
-    	d_Pout[x*4+1] = (unsigned char)(pixValG/pixels);
-    	d_Pout[x*4+2] = (unsigned char)(pixValB/pixels);
-    	d_Pout[x*4+3] = d_Pin[x*4+3];
-    }
-    
-    
+  x = x*4;
+  if(x < n*m*4) {
+    unsigned char r = d_Pin[x];
+    unsigned char g = d_Pin[x+1];
+    unsigned char b = d_Pin[x+2];
+    d_Pout[x] = 0.21f*r + 0.71f*g + 0.07f*b;
+    d_Pout[x+1] = d_Pout[x];
+    d_Pout[x+2] = d_Pout[x];
+    d_Pout[x+3] = d_Pin[x+3];
   }
 }
 
@@ -71,12 +44,11 @@ void Picture(unsigned char* Pin, unsigned char* Pout, int n, int m){
   cudaMalloc((void **) &d_Pin,size);
   cudaMemcpy(d_Pin, Pin, size, cudaMemcpyHostToDevice);
   cudaMalloc((void **) &d_Pout,size);
-  
+
   dim3 gridDim((m-1)/8+1,(n-1)/16+1,1);
   dim3 blockDim(8,16,1);
   PictureKernell<<<gridDim,blockDim>>>(d_Pin,d_Pout,n,m);
   //PictureKernel1D<<<(size-1)/256+1,256>>>(d_Pin,d_Pout,n,m);
-
   cudaMemcpy(Pout, d_Pout, size, cudaMemcpyDeviceToHost);
   cudaFree(d_Pin); cudaFree(d_Pout);
 }
