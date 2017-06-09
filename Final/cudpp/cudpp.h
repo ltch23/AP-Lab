@@ -182,7 +182,7 @@ typedef unsigned int (*BucketMappingFunc)(unsigned int);
 #define CUDPP_INVALID_HANDLE 0xC0DABAD1
 typedef size_t CUDPPHandle;
 
-#include "cudpp_config.h"
+#include <cudpp_config.h>
 
 #ifdef WIN32
     #if defined(CUDPP_STATIC_LIB)
