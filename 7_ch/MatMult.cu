@@ -43,22 +43,40 @@ int main(){
   h_A = (float*) malloc(n*n*sizeof(float));
   h_B = (float*) malloc(n*n*sizeof(float));
   h_C = (float*) malloc(n*n*sizeof(float));
-  printf("A");
+  /*---A---*/
   for(i = 0; i < n; i++){
     //scanf("%f", &h_A[i]);
     for(j = 0; j < n; j++)
-      h_A[i*n+j] = 1;
-  }
-  printf("B");
-  for(i = 0; i < n; i++){
-    //scanf("%f", &h_B[i]);
-    for(j = 0; j < n; j++)
-      h_B[i*n+j] = 1;
+      h_A[i*n+j] = i+j;
   }
   
+  printf("A");
+  for(i = 0; i < n; i++){
+    for(j = 0; j < n; j++)
+        printf("%f ", h_A[i*n+j]);
+    printf("\n");	
+  }
+  printf("\n");
+  
+  /*---B---*/
+    printf("B");
+  for(i = 0; i < n; i++){
+    for(j = 0; j < n; j++)
+      h_B[i*n+j] = i+j+10;
+  }
+  
+  for(i = 0; i < n; i++){
+    for(j = 0; j < n; j++){
+        printf("%f ", h_B[i*n+j]);
+    }
+    printf("\n");	
+  }
+  printf("\n");	
+  
+  
   matMult(h_A,h_B,h_C,n);
-    
-  printf("C");
+  /*---C---*/  
+  printf("A*B=C");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
         printf("%f ", h_C[i*n+j]);

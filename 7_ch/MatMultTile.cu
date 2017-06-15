@@ -59,13 +59,13 @@ int main(){
   for(i = 0; i < n; i++){
     //scanf("%f", &h_A[i]);
     for(j = 0; j < n; j++)
-      h_A[i*n+j] = 1;
+      h_A[i*n+j] = i+j;
   }
   printf("B");
   for(i = 0; i < n; i++){
     //scanf("%f", &h_B[i]);
     for(j = 0; j < n; j++)
-      h_B[i*n+j] = 1;
+      h_B[i*n+j] = i+j+10;
   }
   
   matMult(h_A,h_B,h_C,n);
