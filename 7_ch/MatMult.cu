@@ -28,7 +28,7 @@ void matMult(float* A, float* B, float* C, int n){
 
   //dim3 dimGrid(ceil(n/16.0),ceil(n/16.0),1);
   //dim3 dimBlock(16,16,1);
-  matMultKernel<<<ceil(n/256.0), 256>>>>>(d_A,d_B,d_C,n);
+  matMultKernel<<<ceil(n/256.0), 256>>>(d_A,d_B,d_C,n);
   
   cudaMemcpy(C,d_C,size,cudaMemcpyDeviceToHost);
 
@@ -86,7 +86,7 @@ int main(){
     printf("\n");	
   }
   printf("\n");
-  printf"tiempo: ,%f \n",(float)t)/CLOCKS_PER_SEC);
+  printf("tiempo: %f \n",(((float)t)/CLOCKS_PER_SEC));
 
   return 0;
 }
