@@ -53,7 +53,7 @@ int main(){
   printf("A\n");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++)
-        printf("%f ", h_A[i*n+j]);
+        printf("%d ", h_A[i*n+j]);
     printf("\n");	
   }
   printf("\n");
@@ -67,7 +67,7 @@ int main(){
   printf("B\n");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
-        printf("%f ", h_B[i*n+j]);
+        printf("%d ", h_B[i*n+j]);
     }
     printf("\n");	
   }
