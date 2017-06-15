@@ -50,7 +50,7 @@ int main(){
       h_A[i*n+j] = i+j;
   }
   
-  printf("A");
+  printf("A\n");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++)
         printf("%f ", h_A[i*n+j]);
@@ -59,12 +59,12 @@ int main(){
   printf("\n");
   
   /*---B---*/
-    printf("B");
+    
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++)
       h_B[i*n+j] = i+j+10;
   }
-  
+  printf("B\n");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
         printf("%f ", h_B[i*n+j]);
@@ -76,7 +76,7 @@ int main(){
   
   matMult(h_A,h_B,h_C,n);
   /*---C---*/  
-  printf("A*B=C");
+  printf("A*B=C\n");
   for(i = 0; i < n; i++){
     for(j = 0; j < n; j++){
         printf("%f ", h_C[i*n+j]);
