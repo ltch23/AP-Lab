@@ -22,7 +22,7 @@ void matMultKernel(float *d_M, float *d_N, float *d_P, int Width){
      Nds[ty][tx] = d_N[(m*TILE_WIDTH + ty) * Width + Col];
      __syncthreads();
      for(k = 0; k < TILE_WIDTH; ++k){
-     	Pvalue += Mds[ty][k] * Nds[k][tx];
+	Pvalue += Mds[ty][k] * Nds[k][tx];
      }
      __syncthreads();
   }
@@ -38,12 +38,9 @@ void matMult(float* A, float* B, float* C, int n){
   cudaMalloc((void **) &d_B, size);
   cudaMemcpy(d_B,B,size,cudaMemcpyHostToDevice);
   cudaMalloc((void **) &d_C, size);
-
-  matMultKernel<<<ceil(n/256.0), 256>>>(d_A,d_B,d_C,n);
-
-  //dim3 dimGrid(ceil(n/4.0),ceil(n/4.0),1);
-  //dim3 dimBlock(TILE_WIDTH,TILE_WIDTH,1);
-  //matMultKernel<<<dimGrid, dimBlock>>>(d_A,d_B,d_C,n);
+  dim3 dimGrid(ceil(n/4.0),ceil(n/4.0),1);
+  dim3 dimBlock(TILE_WIDTH,TILE_WIDTH,1);
+  matMultKernel<<<dimGrid, dimBlock>>>(d_A,d_B,d_C,n);
   
   cudaMemcpy(C,d_C,size,cudaMemcpyDeviceToHost);
 
@@ -51,12 +48,13 @@ void matMult(float* A, float* B, float* C, int n){
 }
 
 
-int main(){
+int main(int argc, char * argv[]){
   int n,i,j;
-  clock_t t;
+  n = int(strtol(argv[1], NULL, 10));
+//  clock_t t;
   float *h_A,*h_B,*h_C;
-  printf("n: ");
-  scanf("%d", &n);
+//  printf("n: ");
+  //scanf("%d", &n);
   h_A = (float*) malloc(n*n*sizeof(float));
   h_B = (float*) malloc(n*n*sizeof(float));
   h_C = (float*) malloc(n*n*sizeof(float));
@@ -89,9 +87,9 @@ int main(){
   }
   printf("\n");	
   
-  t=clock();
+  //t=clock();
   matMult(h_A,h_B,h_C,n);
-  t=clock()-t;
+  //t=clock()-t;
   
   /*---C---*/  
   printf("A*B=C\n");
@@ -102,7 +100,7 @@ int main(){
     printf("\n");	
   }
   printf("\n");
-  printf("tiempo: %f \n",(((float)t)/CLOCKS_PER_SEC));
+  //printf("tiempo: %f \n",(((float)t)/CLOCKS_PER_SEC));
   
   return 0;
 }
