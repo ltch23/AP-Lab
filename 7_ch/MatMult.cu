@@ -26,8 +26,8 @@ void matMult(float* A, float* B, float* C, int n){
   cudaMemcpy(d_B,B,size,cudaMemcpyHostToDevice);
   cudaMalloc((void **) &d_C, size);
 
-  dim3 dimGrid(ceil(n/16.0),ceil(n/16.0),1);
-  dim3 dimBlock(16,16,1);
+  dim3 dimGrid(ceil(n/256.0),ceil(n/256.0),1);
+  dim3 dimBlock(256,256,1);
   matMultKernel<<<dimGrid, dimBlock>>>(d_A,d_B,d_C,n);
   
   cudaMemcpy(C,d_C,size,cudaMemcpyDeviceToHost);

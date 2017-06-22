@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+
 #define TILE_WIDTH 4
+#define  BLOCK_WIDTH 4
+
 
 __global__
 void matMultKernel(float *d_M, float *d_N, float *d_P, int Width){
@@ -39,8 +42,8 @@ void matMult(float* A, float* B, float* C, int n){
   cudaMemcpy(d_B,B,size,cudaMemcpyHostToDevice);
   cudaMalloc((void **) &d_C, size);
   
-  dim3 dimGrid(ceil(n/4.0),ceil(n/4.0),1);
-  dim3 dimBlock(TILE_WIDTH,TILE_WIDTH,1);
+  dim3 dimGrid(n/BLOCK_WIDTH),n/BLOCK_WIDTH);
+  dim3 dimBlock(TILE_WIDTH,TILE_WIDTH);
   matMultKernel<<<dimGrid, dimBlock>>>(d_A,d_B,d_C,n);
   
   cudaMemcpy(C,d_C,size,cudaMemcpyDeviceToHost);
