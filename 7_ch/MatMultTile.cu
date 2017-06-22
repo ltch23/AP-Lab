@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 #define TILE_WIDTH 4
 
 __global__
@@ -38,6 +38,7 @@ void matMult(float* A, float* B, float* C, int n){
   cudaMalloc((void **) &d_B, size);
   cudaMemcpy(d_B,B,size,cudaMemcpyHostToDevice);
   cudaMalloc((void **) &d_C, size);
+  
   dim3 dimGrid(ceil(n/4.0),ceil(n/4.0),1);
   dim3 dimBlock(TILE_WIDTH,TILE_WIDTH,1);
   matMultKernel<<<dimGrid, dimBlock>>>(d_A,d_B,d_C,n);
@@ -51,7 +52,6 @@ void matMult(float* A, float* B, float* C, int n){
 int main(int argc, char * argv[]){
   int n,i,j;
   n = int(strtol(argv[1], NULL, 10));
-//  clock_t t;
   float *h_A,*h_B,*h_C;
 //  printf("n: ");
   //scanf("%d", &n);
@@ -86,10 +86,10 @@ int main(int argc, char * argv[]){
     printf("\n");	
   }
   printf("\n");	
-  
-  //t=clock();
+  float t;
+  t=clock();
   matMult(h_A,h_B,h_C,n);
-  //t=clock()-t;
+  t=clock()-t;
   
   /*---C---*/  
   printf("A*B=C\n");
@@ -100,7 +100,7 @@ int main(int argc, char * argv[]){
     printf("\n");	
   }
   printf("\n");
-  //printf("tiempo: %f \n",(((float)t)/CLOCKS_PER_SEC));
+  printf("tiempo: %f \n",t/CLOCKS_PER_SEC);
   
   return 0;
 }

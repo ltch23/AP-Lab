@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 
 __global__
 void matMultKernel(float *d_M, float *d_N, float *d_P, int Width){
@@ -41,7 +41,6 @@ int main(int argc, char* argv[]){
   int n,i,j;
   n = int(strtol(argv[1], NULL, 10));
   float *h_A,*h_B,*h_C;
-  //clock_t t;
   //printf("n: ");
   //scanf("%d", &n);
   h_A = (float*) malloc(n*n*sizeof(float));
@@ -75,9 +74,10 @@ int main(int argc, char* argv[]){
     printf("\n");	
   }
   printf("\n");	
-  //t=clock();
+  float t;
+  t=clock();
   matMult(h_A,h_B,h_C,n);
-  //t=clock()-t;
+  t=clock()-t;
   
   /*---C---*/  
   printf("A*B=C\n");
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]){
     printf("\n");	
   }
   printf("\n");
- // printf("tiempo: %f \n",(((float)t)/CLOCKS_PER_SEC));
+ printf("tiempo: %f \n",t/CLOCKS_PER_SEC);
 
   return 0;
 }
